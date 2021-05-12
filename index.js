@@ -52,3 +52,67 @@ function createTimeOutEvent(employee, timeStamp) {
     return employee;
 
 }
+
+
+//Given an employee record with a date-matched timeInEvent and timeOutEvent hoursWorkedOnDate calculates the hours worked when given an employee record and a date
+function hoursWorkedOnDate(employee, date) {
+
+    let timein = employee.timeInEvents.find(event => event.date === date);
+
+    let timeout = employee.timeOutEvents.find(event => event.date === date)
+
+    return (timeout.hour - timein.hour) / 100
+    // if (date === employee.timeInEvents[0].date){
+    //     let timein = employee.timeInEvents[0].hour;
+    //     let timeout = employee.timeOutEvents[0].hour;
+
+    //     return (timeout - timein) / 100;
+
+    // } else {
+    //     console.log("did not work that day");
+    // }
+
+}
+
+//wagesEarnedOnDate multiplies the hours worked by the employee's rate per hour
+function wagesEarnedOnDate(employee, date) {
+
+    let hours = hoursWorkedOnDate(employee, date);
+    let wage = employee.payPerHour;
+    return hours * wage;
+
+}
+
+//allWagesFor aggregates all the dates' wages and adds them together
+function allWagesFor(employee) {
+    //create an array of just the dates
+    let allDates = employee.timeInEvents.map(event => event.date);
+
+    //new dates array reduce and run through wagesEarned to find total pay
+    let totalPay = allDates.reduce((accumulator, nextDate) => {
+        return accumulator + wagesEarnedOnDate(employee, nextDate);
+    }, 0);
+
+    return totalPay;
+
+
+}
+
+//CalculatePayroll aggregates all the dates' wages and adds them together
+function calculatePayroll(employees) {
+
+    let payroll = employees.reduce((accumulator, employee) => {
+        return accumulator + allWagesFor(employee);
+    }, 0);
+
+    return payroll;
+
+}
+
+
+function findEmployeeByFirstName(employees, name) {
+    return employees.find(employee => {
+        return employee.firstName === name;
+    });
+
+}
